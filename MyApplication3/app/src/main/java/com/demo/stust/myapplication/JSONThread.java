@@ -1,7 +1,7 @@
 package com.demo.stust.myapplication;
 
+import android.os.Handler;
 import android.util.Log;
-import android.widget.TextView;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,16 +18,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import android.os.Handler;
 
 
 /**
  * Created by STUST on 2015/2/16.
  */
 public class JSONThread {
-    private static String TAG = "myTAG",sss=null;
+    private static String TAG = "myTAG";
     private static HashMap<Integer,String> apiMap;
-    private static String str = null, str0 = null, str1 = null, str2 = null, str3 = null;
+    private static String LatLon = null, str_Rain = null, str_Air = null, str_UVI = null, str_Mudflows = null;
     private static List<String> apiData;
     private static String ErrorStr = "The page cannot be displayed because an internal server error has occurred.";
     private static HttpClient httpClient;
@@ -38,8 +37,8 @@ public class JSONThread {
     private static Double lon = 121.0211024;
 
     Handler handler = new Handler();
-    JSONOrder jsonorder0,jsonorder1,jsonorder2,jsonorder3;
-    StringBuilder sb;
+    JSONOrder JO_Rain,JO_Air,JO_UVI,JO_Mudflows;  //Json整理=JsonOrder=JO
+    StringBuilder sbAPIText;
 
     public JSONThread() {
         apiMap = new HashMap<Integer, String>();
@@ -56,39 +55,14 @@ public class JSONThread {
         a2l.start();
     }
 
-    public static String getStr0() {
-        if (str0 != null)
-            return str0;
-        else
-            return null;
-    }
-    public static String getStr1() {
-        if (str1 != null)
-            return str1;
-        else
-            return null;
-    }
-    public static String getStr2() {
-        if (str2 != null)
-            return str2;
-        else
-            return null;
-    }
-    public static String getStr3() {
-        if (str2 != null)
-            return str2;
-        else
-            return null;
-    }
-
-    class ThreadAdr2LL extends Thread {
+    class ThreadAdr2LL extends Thread { //用於地址轉經緯 之執行緒
         public void run() {
 
             String inputADR = MainActivity.PlaceholderFragment.getStrADR();
             httpClient = new DefaultHttpClient();    // set HttpClient client
             httpGet = new HttpGet(  // require Http to get the values
                     "http://maps.google.com.tw/maps/api/geocode/json?address="
-                            + inputADR + "&sensor=false");
+                            + inputADR + "&sensor=false");  //於Google地址轉經緯中加入讀取至EditText之內容
             StringBuilder sb = new StringBuilder();
             try {
                 response = httpClient.execute(httpGet);    // get the reply from http
@@ -105,14 +79,13 @@ public class JSONThread {
                         .getJSONObject("location"); // take the Latitude and Longitude of address by JSONObject
                 lat = location.getDouble("lat");   // get the Latitude
                 lon = location.getDouble("lng");    // get the Longitude
-                str = lat + "," + lon;
-                Log.i(TAG,"位址：" + inputADR +"  經緯：" + str +"\t 地址轉經緯結束");
-                while (str != null)
+                LatLon = lat + "," + lon;
+                Log.i(TAG,"位址：" + inputADR +"  經緯：" + LatLon +"\t 地址轉經緯結束");
+                while (LatLon != null)
                 {
-                    if (str != null){
+                    if (LatLon != null){
                         ThreadBro t1 = new ThreadBro();
-                        t1.start();
-                        break;
+                        t1.start(); break;
                     }
                 }
             } catch (JSONException e) {
@@ -126,31 +99,37 @@ public class JSONThread {
     }
 
     class ThreadBro extends Thread{
-
-
         public void run(){
             httpClient = new DefaultHttpClient();    // set HttpClient client
             apiData = new ArrayList<String>();
             try {
                 for (int i=0 ; i<4 ; i++){
-                    httpGet = new HttpGet(apiMap.get(i)+str);    // require Http to get the values
+                    httpGet = new HttpGet(apiMap.get(i)+LatLon);    // require Http to get the values   //取得四個API其中一個後+入地址轉換過後的經緯
                     response = httpClient.execute(httpGet);    // get the reply from http;
                     switch (i){
-                        case 3: str0 = EntityUtils.toString(response .getEntity()); apiData.add(str0);  break;
-                        case 0: str1 = EntityUtils.toString(response .getEntity()); apiData.add(str1);  break;
-                        case 1: str2 = EntityUtils.toString(response .getEntity()); apiData.add(str2);  break;
-                        case 2: str3 = EntityUtils.toString(response .getEntity()); apiData.add(str3);  break;
+                        case 0: str_Rain = EntityUtils.toString(response .getEntity()); apiData.add(str_Rain);  Log.i(TAG,"str_Rain:"+str_Rain);break;  //降雨
+                        case 1: str_Air = EntityUtils.toString(response .getEntity()); apiData.add(str_Air);  Log.i(TAG,"str_Air:"+str_Air);break;  //空氣
+                        case 2: str_UVI = EntityUtils.toString(response .getEntity()); apiData.add(str_UVI);  Log.i(TAG,"str_UVI:"+str_UVI);break;  //紫外線
+                        case 3: str_Mudflows = EntityUtils.toString(response .getEntity()); apiData.add(str_Mudflows);  Log.i(TAG,"str_Mudflows:"+str_Mudflows);break;  //土石流
                     }
                 }
 
                 if (apiData != null) {
-                    sb = new StringBuilder();
+                    sbAPIText = new StringBuilder();
                     Log.i(TAG, "\n" + "API Data：" + "\n" + apiData.get(0) + "\n" + apiData.get(1) + "\n" + apiData.get(2) + "\n" + apiData.get(3));
-                    //jsonorder3.getTitle() + "\n" + jsonorder3.getName()
-                    jsonorder0 = new JSONOrder('0',str0);   sb.append("土石流機率：" + jsonorder0.getLevel() + "\n地標：" + jsonorder0.getLandmark());
-                    jsonorder1 = new JSONOrder('1',str1);   sb.append("\n\n降雨量/小時："+ jsonorder1.getR1hr() +"\n降雨量/天：" + jsonorder1.getR24hr() + "\n危害層級(0~5)：" + jsonorder1.getLevel() + "\n危害程度：" + jsonorder1.getLeveltxt());
-                    jsonorder2 = new JSONOrder('2',str2);   sb.append("\n\n空氣汙染指標："+jsonorder2.getPSI() + "\n汙染源：" + jsonorder2.getMajorPoutant() + "\n危害層級(0~4)：" + jsonorder2.getLevel() + "\n危害程度：" + jsonorder2.getLeveltxt());
-                    jsonorder3 = new JSONOrder('3',str3);   sb.append("\n\n紫外線指標：" + jsonorder3.getUVI() + "\n危害層級(0~4)：" + jsonorder3.getLevel() + "\n危害程度：" + jsonorder3.getLeveltxt());
+
+                    JO_Rain = new JSONOrder('0',str_Rain);   Log.i(TAG,"j0time");
+                    sbAPIText.append("降雨量/小時："+ JO_Rain.getR1hr() +"\n降雨量/天：" + JO_Rain.getR24hr() + "\n危害層級(0~5)：" + JO_Rain.getLevel() + "\n危害程度：" + JO_Rain.getLeveltxt());
+
+                    JO_Air = new JSONOrder('1',str_Air);   Log.i(TAG,"j1time");
+                    sbAPIText.append("\n\n空氣汙染指標："+JO_Air.getPSI() + "\n汙染源：" + JO_Air.getMajorPoutant() + "\n危害層級(0~4)：" + JO_Air.getLevel() + "\n危害程度：" + JO_Air.getLeveltxt());
+
+                    JO_UVI = new JSONOrder('2',str_UVI);   Log.i(TAG,"j2time");
+                    sbAPIText.append("\n\n紫外線指標：" + JO_UVI.getUVI() + "\n危害層級(0~4)：" + JO_UVI.getLevel() + "\n危害程度：" + JO_UVI.getLeveltxt());
+
+                    JO_Mudflows = new JSONOrder('3',str_Mudflows);   Log.i(TAG,"j3time");
+                    sbAPIText.append("\n\n土石流機率：" + JO_Mudflows.getLevel() + "\n地標：" + JO_Mudflows.getLandmark());
+
                     handler.post(ChangeText);
                 }
 
@@ -169,7 +148,8 @@ public class JSONThread {
     private Runnable ChangeText = new Runnable() {
         @Override
         public void run() {
-            MainActivity.PlaceholderFragment.tv.setText(sb);
+            MainActivity.PlaceholderFragment.tv.setText(sbAPIText);
+            MainActivity.PlaceholderFragment.btn.setEnabled(true);
         }
     };
 

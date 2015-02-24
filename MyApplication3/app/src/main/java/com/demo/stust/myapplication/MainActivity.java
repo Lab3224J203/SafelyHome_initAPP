@@ -71,7 +71,7 @@ public class MainActivity extends Activity{
 
         private JSONAsyncTask jsonAsyncTask;
         private static EditText et;
-        private static Button btn;
+        public static Button btn;
         public static TextView tv;
         private static String strADR;
         private static String strAPIData;
@@ -83,11 +83,6 @@ public class MainActivity extends Activity{
             return strADR;
         }
 
-        public static void setStrAPIData(String strAPIData) {
-            PlaceholderFragment.strAPIData = strAPIData;
-        }
-
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -97,6 +92,7 @@ public class MainActivity extends Activity{
             btn = (Button) rootView.findViewById(R.id.button);
             btn.setOnClickListener(new myOnClickListener());
             tv.setText("請輸入縣市地址後按下Search");
+
 //            // Get RecyclerView
 //            RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
 //            recyclerView.setHasFixedSize(true);
@@ -112,12 +108,13 @@ public class MainActivity extends Activity{
         private class myOnClickListener implements View.OnClickListener {
             @Override
             public void onClick(View v) {
-                jsonAsyncTask = new JSONAsyncTask();
-//                    jsonAsyncTask.execute("24.080456,120.551188");
+//                jsonAsyncTask = new JSONAsyncTask();
+//                jsonAsyncTask.execute("24.080456,120.551188");
                 if (isConnected()) {
                     strADR = et.getText().toString();
                     JSONThread jsonTT = new JSONThread();
                     tv.setText("請稍候...");
+//                    btn.setEnabled(false);
                 }
                 else
                     Toast.makeText(getActivity(), "尚未連線網際網路　\nNo network connection available.", Toast.LENGTH_SHORT).show();

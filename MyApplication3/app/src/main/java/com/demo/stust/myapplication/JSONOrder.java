@@ -5,8 +5,6 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
 /**
  * Created by STUST on 2015/2/17.
  */
@@ -26,13 +24,6 @@ public class JSONOrder {
     private String MajorPoutant = null;//汙染源
     private String landmark = null;
 
-
-
-//    JSONObject jsonObject = new JSONObject(sb.toString());  // let jsonObject be receiving reply
-//    JSONObject location = jsonObject.getJSONArray("results")
-//            .getJSONObject(0).getJSONObject("geometry")
-//            .getJSONObject("location"); // take the Latitude and Longitude of address by JSONObject
-
     public JSONOrder(char order,String json) throws JSONException {
         json = json.replace("[","");    json = json.replace("]","");
         JSONObject jsonAPIData = new JSONObject(json);
@@ -40,18 +31,7 @@ public class JSONOrder {
         title = jsonAPIData.getString("title");
 
         switch(order){
-            case '0':   //土石流
-                name = jsonAPIData.getString("name");
-                level = jsonAPIData.getString("level");
-                landmark = jsonAPIData.getString("landmark");
-                lat = jsonAPIData.getJSONObject("loc").getDouble("lat");
-                lon = jsonAPIData.getJSONObject("loc").getDouble("long");
-                Log.i("myTag","name："+name +
-                                "\t程度："+ level +
-                                "\t地標："+ landmark +
-                                "\t經緯："+ lat + "," + lon);
-                break;
-            case '1':   //降雨
+            case '0':   //降雨
                 name = jsonAPIData.getString("county");
                 R1hr = jsonAPIData.getString("R1hr");
                 R24hr= jsonAPIData.getString("R24hr");
@@ -61,7 +41,8 @@ public class JSONOrder {
                 lat = jsonAPIData.getJSONObject("loc").getDouble("lat");
                 lon = jsonAPIData.getJSONObject("loc").getDouble("long");
             break;
-            case '2':   //空氣品質
+
+            case '1':   //空氣品質
                 name = jsonAPIData.getString("name");
                 PSI = jsonAPIData.getString("PSI");
                 MajorPoutant= jsonAPIData.getString("MajorPoutant");
@@ -71,7 +52,8 @@ public class JSONOrder {
                 lat = jsonAPIData.getJSONObject("loc").getDouble("lat");
                 lon = jsonAPIData.getJSONObject("loc").getDouble("long");
                 break;
-            case '3':   //紫外線
+
+            case '2':   //紫外線
                 name = jsonAPIData.getString("name");
                 UVI= jsonAPIData.getString("UVI");
                 level = jsonAPIData.getString("level");
@@ -80,6 +62,19 @@ public class JSONOrder {
                 lat = jsonAPIData.getJSONObject("loc").getDouble("lat");
                 lon = jsonAPIData.getJSONObject("loc").getDouble("long");
                 break;
+
+            case '3':   //土石流
+                name = jsonAPIData.getString("name");
+                level = jsonAPIData.getString("level");
+                landmark = jsonAPIData.getString("landmark");
+                lat = jsonAPIData.getJSONObject("loc").getDouble("lat");
+                lon = jsonAPIData.getJSONObject("loc").getDouble("long");
+                Log.i("myTag","name："+name +
+                        "\t程度："+ level +
+                        "\t地標："+ landmark +
+                        "\t經緯："+ lat + "," + lon);
+                break;
+
             default:
                 Log.i("myTag","Nothinggggggggggggggggg");
                 break;

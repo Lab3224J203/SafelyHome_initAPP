@@ -4,7 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity$PlaceholderFragment"
+    tools:context=".MainActivity"
     android:orientation="vertical">
 
     <LinearLayout
@@ -18,7 +18,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/editText"
             android:hint="台灣地址（縣市）"
-            android:layout_weight="1.09" />
+            android:layout_weight="1.09"
+            android:elevation="5dp"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -26,7 +27,8 @@
             android:text="Search"
             android:id="@+id/button"
             android:clickable="false"
-            android:enabled="true" />
+            android:enabled="true"
+            android:elevation="5dp"/>
     </LinearLayout>
 
     <TextView
@@ -35,7 +37,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Show Data"
         android:id="@+id/textView"
-        android:singleLine="false" />
+        android:singleLine="false"
+        android:elevation="5dp"/>
 
     <!--<LinearLayout-->
         <!--android:orientation="vertical"-->
@@ -51,5 +54,4 @@
             <!--&lt;!&ndash;android:layout_weight="3" />&ndash;&gt;-->
     <!--</LinearLayout>-->
 
-    //android:layout_height="190dp"
 </LinearLayout>
