@@ -3,7 +3,7 @@
 ##GitHub:
 WebSite:https://github.com/Lab3224J203/housesafe_V2.0   <br>
 APP:https://github.com/Lab3224J203/SafelyHome_ini   <br>
-more Time : https://github.com/Changgg/SafeHome <br>
+more Trim : https://github.com/Changgg/SafeHome <br>
 
 ##Demo:
 WebSite:http://housesafe3224.azurewebsites.net/ <br>
